@@ -390,10 +390,10 @@
 
     .hero-subtitle{
       font-family:'IBM Plex Sans Hebrew',sans-serif;
-      font-size:20px;
-      font-weight:400;
-      line-height:1.2; /* interlineado más chico */
-      margin-bottom:14px;
+      font-size:19px; /* igual o apenas mayor que la bajada */
+      font-weight:500;
+      line-height:1.22;
+      margin-bottom:12px;
       color:#e5e7eb;
       animation:fadeUp .5s ease-out both;
       animation-delay:.12s;
@@ -423,6 +423,9 @@
     }
 
     .hero-desc{
+      font-size:18px;
+      line-height:1.5;
+
       animation:fadeUp .5s ease-out both;
       animation-delay:.18s;
     }
@@ -472,7 +475,7 @@
     <div class="hero">
       <div class="hero-content">
         <!-- Logo: renombrar el archivo sin espacios, por ej: logo-db.png -->
-        <img src="logo-db.png" alt="Docentes Brown" class="hero-logo">
+        <img src="logo-db.png" alt="Docentes Brown" class="hero-logo" onerror="this.onerror=null;this.src='Dise%C3%B1o%20sin%20t%C3%ADtulo%20(1).png';">
 
         <h1 class="hero-main-title">DOCENTES BROWN</h1>
         <h2 class="hero-subtitle">Diseñamos proyectos educativos que diferencian a tu institución</h2>
