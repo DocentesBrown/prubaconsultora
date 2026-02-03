@@ -237,7 +237,7 @@
 
         <div class="buttons">
           <a href="#contacto" class="btn-primary">Solicitar reunión</a>
-          <a href="dossier.pdf" id="btnDossier" class="btn-outline" download>Descargar dossier</a>
+          <a href="dossier.pdf" id="btnDossier" class="btn-outline" target="_blank">Descargar dossier</a>
         </div>
       </div>
     </div>
@@ -383,15 +383,25 @@
 </script>
 
 <script>
-  // Botón dossier: descarga + redirección
+  // Botón dossier: abre en nueva pestaña + descarga automática
   const btnDossier = document.getElementById('btnDossier');
 
   if(btnDossier){
-    btnDossier.addEventListener('click', function(){
-      // Redirige luego de iniciar la descarga
-      setTimeout(() => {
-        window.location.href = '#contacto'; // Pantalla destino
-      }, 1200);
+    btnDossier.addEventListener('click', function(e){
+      e.preventDefault();
+
+      const pdfUrl = 'dossier.pdf';
+
+      // 1) Abrir el PDF en una nueva pestaña
+      window.open(pdfUrl, '_blank');
+
+      // 2) Forzar descarga
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = 'Dossier-Docentes-Brown.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     });
   }
 </script>
