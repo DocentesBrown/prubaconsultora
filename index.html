@@ -37,6 +37,7 @@
       --radius:18px;
       --hairline:rgba(31,59,92,.12);
       --focus:rgba(77,127,184,.22);
+      --sticky-offset: 116px; /* fallback; updated via JS */
     }
 
     .container{max-width:1200px;margin:auto;padding:0 20px}
@@ -99,7 +100,18 @@
     }
 
     /* =========================
-       ZÓCALO SUPERIOR (FULL WIDTH)
+       STICKY SHELL (TOPBAR + NAV)
+       ========================= */
+    .sticky-shell{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      /* subtle separation from content */
+      box-shadow:0 10px 30px rgba(0,0,0,.06);
+    }
+
+    /* =========================
+       ZÓCALO SUPERIOR (FULL WIDTH) - PC ONLY
        ========================= */
     .topbar{
       width:100%;
@@ -143,48 +155,24 @@
     .topbar a:hover{opacity:.86}
 
     /* =========================
-       HEADER PREMIUM
+       NAV BAR (below topbar)
        ========================= */
-    header{
-      position:relative;
-      color:#fff;
-      padding:26px 0 72px;
-      background:
-        radial-gradient(900px 420px at 18% 20%, rgba(77,127,184,.32), transparent 60%),
-        radial-gradient(700px 360px at 86% 36%, rgba(255,255,255,.10), transparent 62%),
-        linear-gradient(160deg, #132c47 0%, var(--brand-blue) 44%, #0f2238 100%);
-      overflow:hidden;
+    .nav-bar{
+      width:100%;
+      background:rgba(19,44,71,.70);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.10);
     }
-
-    /* grain only on desktop (performance) */
-    @media(min-width:901px){
-      header::after{
-        content:"";
-        position:absolute; inset:0;
-        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
-        mix-blend-mode:soft-light;
-        opacity:.32;
-        pointer-events:none;
-      }
-    }
-
-    /* NAV */
-    nav{
-      position:relative;
+    .nav-row{
+      max-width:1200px;
+      margin:auto;
+      padding:12px 20px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:16px;
-      margin-bottom:44px;
-      z-index:3;
     }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      min-width:220px;
-    }
-    .brand h1{font-size:20px}
+    .brand h1{font-size:20px;color:#fff}
 
     .nav-links{
       display:flex;
@@ -209,31 +197,8 @@
       border-radius:999px;
     }
 
-    /* Sticky nav (PC only) */
-    @media(min-width:901px){
-      .nav-wrap{
-        position:sticky;
-        top:0;
-        z-index:50;
-        padding:12px 0;
-        backdrop-filter: blur(10px);
-        background:rgba(19,44,71,.52);
-        border-bottom:1px solid rgba(255,255,255,.10);
-      }
-      .nav-inner{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:16px;
-      }
-    }
-    .nav-cta{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-    }
     .cta-pill{
-      display:none;
+      display:inline-flex;
       text-decoration:none;
       font-weight:900;
       color:#0b1220;
@@ -242,10 +207,10 @@
       padding:10px 12px;
       border-radius:999px;
       white-space:nowrap;
+      transition:transform .15s ease, opacity .15s ease;
     }
-    @media(min-width:901px){
-      .cta-pill{display:inline-flex}
-    }
+    .cta-pill:hover{opacity:.95}
+    .cta-pill:active{transform:scale(.985)}
 
     /* Mobile nav */
     .hamburger{
@@ -257,17 +222,12 @@
       padding:10px 12px;
       cursor:pointer;
       font-weight:900;
-      z-index:6;
     }
     .mobile-menu{
       display:none;
-      margin-top:12px;
-      padding:14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      z-index:6;
-      position:relative;
+      padding:12px 20px 14px;
+      background:rgba(19,44,71,.82);
+      border-bottom:1px solid rgba(255,255,255,.10);
     }
     .mobile-menu a{
       display:block;
@@ -279,6 +239,33 @@
     }
     .mobile-menu a + a{border-top:1px solid rgba(255,255,255,.10)}
     .mobile-menu a:hover{opacity:1}
+    .mobile-menu.show{display:block}
+
+    /* =========================
+       HEADER PREMIUM
+       ========================= */
+    header{
+      position:relative;
+      color:#fff;
+      padding:36px 0 72px;
+      background:
+        radial-gradient(900px 420px at 18% 20%, rgba(77,127,184,.32), transparent 60%),
+        radial-gradient(700px 360px at 86% 36%, rgba(255,255,255,.10), transparent 62%),
+        linear-gradient(160deg, #132c47 0%, var(--brand-blue) 44%, #0f2238 100%);
+      overflow:hidden;
+    }
+
+    /* grain only on desktop (performance) */
+    @media(min-width:901px){
+      header::after{
+        content:"";
+        position:absolute; inset:0;
+        background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+        mix-blend-mode:soft-light;
+        opacity:.32;
+        pointer-events:none;
+      }
+    }
 
     /* HERO */
     .hero{
@@ -558,7 +545,6 @@
       background:radial-gradient(circle at center, rgba(77,127,184,.28), transparent 62%);
       opacity:.9;
     }
-    /* Nosotros: visible */
     .about .section-title h3{
       color:#f2f4f7;
       font-size:24px;
@@ -816,6 +802,11 @@
     .success-popup.show{opacity:1;transform:translateY(0);pointer-events:auto}
 
     /* =========================
+       OFFSET for anchored scroll
+       ========================= */
+    section{scroll-margin-top: var(--sticky-offset);}
+
+    /* =========================
        RESPONSIVE
        ========================= */
     @media(max-width:1100px){
@@ -836,12 +827,13 @@
       /* oculto zócalo arriba en móvil */
       .topbar{display:none}
 
-      header{padding:16px 0 44px}
-      nav{margin-bottom:18px}
+      /* in mobile, keep sticky shell but nav tighter */
+      .nav-row{padding:10px 16px}
+      .brand h1{font-size:18px}
       .nav-links{display:none}
       .hamburger{display:inline-flex}
-      .mobile-menu{display:none}
-      .mobile-menu.show{display:block}
+
+      header{padding:22px 0 44px}
 
       .hero-main-title{font-size:42px}
       .hero-subtitle{font-size:16.5px}
@@ -863,70 +855,67 @@
       .highlights{display:none}
       .hero-visual{display:block}
 
-      /* Sticky nav off on mobile */
-      .nav-wrap{position:relative;backdrop-filter:none;background:transparent;border-bottom:none;padding:0}
+      /* CTA hidden on very small screens to reduce clutter */
+      .cta-pill{display:none}
     }
 
     /* PC: oculto tarjetitas del header y muestro highlights debajo */
     @media(min-width:901px){
       .hero-visual{display:none}
       .highlights{display:block}
+      .hamburger{display:none}
+      .mobile-menu{display:none !important}
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Zócalo full-width SOLO en PC -->
-  <div class="topbar" aria-label="Zócalo superior">
-    <div class="topbar-inner">
-      <div class="topbar-left">Consultora Educativa</div>
-      <div class="topbar-right">
-        <span>Email: <a href="mailto:docentesbrown-oficial@gmail.com">docentesbrown-oficial@gmail.com</a></span>
-        <span>WhatsApp: <a href="https://wa.me/5491153196358" target="_blank" rel="noopener">+54 9 11 5319-6358</a></span>
-        <span>IG: <a href="https://instagram.com/docentesbrown.ce" target="_blank" rel="noopener">@docentesbrown.ce</a></span>
+  <!-- Sticky: topbar + nav (PC) -->
+  <div class="sticky-shell" id="stickyShell">
+    <div class="topbar" aria-label="Zócalo superior">
+      <div class="topbar-inner">
+        <div class="topbar-left">Consultora Educativa</div>
+        <div class="topbar-right">
+          <span>Email: <a href="mailto:docentesbrown-oficial@gmail.com">docentesbrown-oficial@gmail.com</a></span>
+          <span>WhatsApp: <a href="https://wa.me/5491153196358" target="_blank" rel="noopener">+54 9 11 5319-6358</a></span>
+          <span>IG: <a href="https://instagram.com/docentesbrown.ce" target="_blank" rel="noopener">@docentesbrown.ce</a></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bar" aria-label="Barra de navegación">
+      <div class="nav-row">
+        <div class="brand">
+          <h1>DOCENTES BROWN | Consultora Educativa</h1>
+        </div>
+
+        <div class="nav-links" aria-label="Secciones">
+          <a href="#servicios" data-nav="servicios">Servicios</a>
+          <a href="#metodologia" data-nav="metodologia">Metodología</a>
+          <a href="#nosotros" data-nav="nosotros">Nosotros</a>
+        </div>
+
+        <a class="cta-pill" href="#contacto" aria-label="Ir a Solicitar reunión">Solicitar reunión</a>
+
+        <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menú">
+          ☰ Menú
+        </button>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu" aria-label="Menú móvil">
+        <a href="#servicios">Servicios</a>
+        <a href="#metodologia">Metodología</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#contacto">Solicitar reunión</a>
       </div>
     </div>
   </div>
 
   <header>
-    <div class="nav-wrap">
-      <div class="container nav-inner">
-        <nav class="reveal d1" aria-label="Navegación principal">
-          <div class="brand">
-            <h1>DOCENTES BROWN | Consultora Educativa</h1>
-          </div>
-
-          <div class="nav-cta">
-            <div class="nav-links" aria-label="Secciones">
-              <a href="#servicios" data-nav="servicios">Servicios</a>
-              <a href="#metodologia" data-nav="metodologia">Metodología</a>
-              <a href="#nosotros" data-nav="nosotros">Nosotros</a>
-              <a href="#contacto" data-nav="contacto">Contacto</a>
-            </div>
-            <a class="cta-pill" href="#contacto">Solicitar reunión</a>
-          </div>
-
-          <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menú">
-            ☰ Menú
-          </button>
-        </nav>
-      </div>
-      <div class="container">
-        <div class="mobile-menu" id="mobileMenu" aria-label="Menú móvil">
-          <a href="#servicios">Servicios</a>
-          <a href="#metodologia">Metodología</a>
-          <a href="#nosotros">Nosotros</a>
-          <a href="#contacto">Contacto</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="container" style="position:relative; z-index:2; padding-top: 10px;">
+    <div class="container" style="position:relative; z-index:2;">
       <div class="hero">
-        <!-- Columna izquierda -->
         <div class="reveal d2">
-          <!-- Logo eliminado -->
           <h1 class="hero-main-title">DOCENTES BROWN</h1>
           <h2 class="hero-subtitle">Diseñamos proyectos educativos que diferencian a tu institución</h2>
 
@@ -976,8 +965,8 @@
             </div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </header>
 
@@ -1104,7 +1093,6 @@
     <div class="container">
       <p>© 2026 Docentes Brown - Consultora Educativa | Todos los derechos reservados</p>
 
-      <!-- En móvil: info abajo, optimizada y táctil -->
       <div class="mobile-bottom-info" aria-label="Información de contacto (móvil)">
         <h4>Contacto institucional</h4>
         <div class="quick-actions">
@@ -1179,7 +1167,20 @@
 
   <script>
     /* =========================
-       NAV: Mobile menu + active section indicator
+       Sticky offset -> keeps anchors correct
+       ========================= */
+    const stickyShell = document.getElementById('stickyShell');
+    function updateStickyOffset(){
+      if (!stickyShell) return;
+      const h = stickyShell.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--sticky-offset', Math.ceil(h + 16) + 'px');
+    }
+    window.addEventListener('resize', updateStickyOffset, {passive:true});
+    window.addEventListener('load', updateStickyOffset, {passive:true});
+    updateStickyOffset();
+
+    /* =========================
+       Mobile menu
        ========================= */
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -1198,12 +1199,12 @@
       });
     }
 
-    // Active section underline (desktop)
+    /* =========================
+       Active section underline (desktop)
+       ========================= */
     const navLinks = Array.from(document.querySelectorAll('.nav-links a[data-nav]'));
     const sectionIds = navLinks.map(a => a.getAttribute('data-nav'));
-    const sections = sectionIds
-      .map(id => document.getElementById(id))
-      .filter(Boolean);
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
 
     function setActive(id){
       navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('data-nav') === id));
@@ -1218,7 +1219,6 @@
       }, { root: null, threshold: [0.2, 0.35, 0.5], rootMargin: "-10% 0px -70% 0px" });
 
       sections.forEach(s => io.observe(s));
-      // default
       setActive(sections[0].id);
     }
 
@@ -1311,7 +1311,6 @@
       interestProposal.value = propuestaTitulo;
       if (interestMessage) interestMessage.value = `Me interesa recibir información sobre: ${propuestaTitulo}.`;
       interestWrap.classList.add('show');
-      // scroll into view (nice on mobile)
       interestWrap.scrollIntoView({behavior:'smooth', block:'start'});
     }
 
@@ -1384,7 +1383,6 @@
       });
     }
 
-    // Esc closes modal
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
     });
