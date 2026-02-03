@@ -213,6 +213,125 @@
       color:#6b7280;
     }
 
+
+
+/* Tarjetas interactivas */
+.card.interactive{position:relative;padding-bottom:55px}
+.card-btn{
+  position:absolute;
+  bottom:-18px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--secondary);
+  color:white;
+  border:none;
+  padding:8px 18px;
+  border-radius:20px;
+  font-size:13px;
+  cursor:pointer;
+  box-shadow:0 6px 15px rgba(0,0,0,.15)
+}
+
+/* Modal */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 1.5s ease;
+  z-index:9999
+}
+
+.modal.show{opacity:1;pointer-events:auto}
+
+.modal-content{
+  background:white;
+  max-width:500px;
+  width:90%;
+  padding:30px;
+  border-radius:16px;
+  position:relative;
+  animation:scaleIn 1.5s ease
+}
+
+@keyframes scaleIn{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.modal-content h3{margin-bottom:15px}
+
+.modal-content ul{margin-bottom:20px;padding-left:20px}
+.modal-content li{margin-bottom:8px}
+
+.modal-content .close{
+  position:absolute;
+  top:10px;
+  right:14px;
+  border:none;
+  background:none;
+  font-size:20px;
+  cursor:pointer
+}
+
+.modal-content .interest-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  background:var(--secondary);
+  color:white;
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:14px;
+  box-shadow:0 10px 24px rgba(0,0,0,.12)
+}
+
+/* Cards dentro del modal */
+.proposal{
+  border:1px solid rgba(31,59,92,.10);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
+  background:#fff;
+}
+.proposal h4{margin:0 0 8px 0;font-size:18px}
+.proposal ul{margin:0 0 12px 0;padding-left:18px}
+.proposal li{margin:6px 0;color:#374151}
+.proposal .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Modal interés (mini) */
+.modal.small .modal-content{max-width:520px}
+.mini-form{margin-top:8px}
+.mini-form input,.mini-form textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+}
+.mini-form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.mini-form .row{grid-template-columns:1fr}}
+
+.mini-form .send{
+  width:100%;
+  padding:12px;
+  background:var(--primary);
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.mini-form .send:disabled{opacity:.7;cursor:not-allowed}
+.mini-form .hint{font-size:12px;color:#6b7280;margin-top:8px}
 </style>
 </head>
 <body>
@@ -255,14 +374,16 @@
 
     <div class="grid-3">
 
-      <div class="card">
+      <div class="card interactive" data-type="programas">
         <h4>Programas Extracurriculares</h4>
         <p>Diseño curricular, perfiles docentes, materiales, evaluación y proyecto final.</p>
+        <button class="card-btn">Conocé nuestras propuestas</button>
       </div>
 
-      <div class="card">
+      <div class="card interactive" data-type="formacion">
         <h4>Formación Institucional</h4>
         <p>Capacitaciones situadas, jornadas pedagógicas y dispositivos de reflexión docente.</p>
+        <button class="card-btn">Conocé nuestras propuestas</button>
       </div>
 
       <div class="card">
@@ -320,7 +441,7 @@
       <p>Cada proyecto comienza con una conversación.</p>
     </div>
 
-    <form action="https://formspree.io/f/mojlrgwb" method="POST">
+    <form id="contactForm" action="https://formspree.io/f/mojlrgwb" method="POST">
       <input type="text" name="nombre" placeholder="Nombre y Apellido" required>
       <input type="text" name="institucion" placeholder="Institución" required>
       <input type="text" name="cargo" placeholder="Cargo" required>
@@ -337,6 +458,43 @@
   <p>© 2026 Docentes Brown - Consultora Educativa | Todos los derechos reservados</p>
 </footer>
 
+<!-- Modal Propuestas -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-content">
+    <button class="close" type="button" aria-label="Cerrar">×</button>
+    <h3 id="modalTitle"></h3>
+    <div id="modalList"></div>
+  </div>
+</div>
+
+<!-- Modal interés (envío de mail) -->
+<div id="interestModal" class="modal small" aria-hidden="true">
+  <div class="modal-content">
+    <button class="close" type="button" aria-label="Cerrar">×</button>
+    <h3 id="interestTitle">Me interesa</h3>
+    <p style="color:#6b7280;margin-bottom:12px">Dejanos tus datos y te enviamos una propuesta institucional.</p>
+
+    <form id="interestForm" class="mini-form" action="https://formspree.io/f/mojlrgwb" method="POST">
+      <input type="hidden" name="_subject" value="Nueva consulta por propuesta - Docentes Brown Consultora">
+      <input type="hidden" name="propuesta" id="interestProposal" value="">
+
+      <div class="row">
+        <input type="text" name="nombre" placeholder="Nombre y Apellido" required>
+        <input type="text" name="institucion" placeholder="Institución" required>
+      </div>
+      <div class="row">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="text" name="whatsapp" placeholder="WhatsApp (opcional)">
+      </div>
+
+      <textarea name="mensaje" rows="4" placeholder="Contanos brevemente qué nivel/es (Inicial/Primaria/Secundaria) y qué objetivo tienen."></textarea>
+
+      <button class="send" type="submit">Enviar</button>
+      <div class="hint">Respuesta estimada: dentro de las 24 hs hábiles.</div>
+    </form>
+  </div>
+</div>
+
 <!-- Popup confirmación -->
 <div id="successPopup" class="success-popup">
   <button id="closePopup">×</button>
@@ -344,42 +502,174 @@
 </div>
 
 <script>
-  const form = document.querySelector('form');
+  // =========================
+  // ✅ Envío de formularios (Contact + Interés) con popup
+  // =========================
+  const contactForm = document.getElementById('contactForm');
+  const interestForm = document.getElementById('interestForm');
+
   const popup = document.getElementById('successPopup');
-  const closeBtn = document.getElementById('closePopup');
+  const closePopupBtn = document.getElementById('closePopup');
 
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
+  function showSuccessPopup(){
+    popup.classList.add('show');
+    setTimeout(()=> popup.classList.remove('show'), 8000);
+  }
+  closePopupBtn.addEventListener('click', ()=> popup.classList.remove('show'));
 
-    const data = new FormData(form);
+  async function submitFormAjax(formEl){
+    const btn = formEl.querySelector('button[type="submit"]');
+    const original = btn ? btn.textContent : '';
+    if(btn){ btn.disabled = true; btn.textContent = 'Enviando...'; }
 
     try{
-      const res = await fetch(form.action, {
+      const res = await fetch(formEl.action, {
         method: 'POST',
-        body: data,
+        body: new FormData(formEl),
         headers: { 'Accept': 'application/json' }
       });
 
       if(res.ok){
-        form.reset();
-        popup.classList.add('show');
-
-        // Auto ocultar en 8s
-        setTimeout(()=>{
-          popup.classList.remove('show');
-        },8000);
-      }else{
+        formEl.reset();
+        showSuccessPopup();
+        return true;
+      } else {
         alert('No se pudo enviar el formulario. Intente nuevamente.');
+        return false;
       }
-
-    }catch(err){
+    } catch(err){
+      console.error(err);
       alert('Error de conexión. Intente más tarde.');
+      return false;
+    } finally {
+      if(btn){ btn.disabled = false; btn.textContent = original; }
     }
+  }
+
+  if(contactForm){
+    contactForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      await submitFormAjax(contactForm);
+    });
+  }
+
+  // =========================
+  // ✅ Modales de propuestas + modal "Me interesa"
+  // =========================
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalList = document.getElementById('modalList');
+  const modalClose = modal.querySelector('.close');
+
+  const interestModal = document.getElementById('interestModal');
+  const interestClose = interestModal.querySelector('.close');
+  const interestTitle = document.getElementById('interestTitle');
+  const interestProposal = document.getElementById('interestProposal');
+
+  const proposals = {
+    programas: [
+      {
+        title: 'Robótica y Programación (Inicial/Primaria/Secundaria)',
+        items: ['Secuencia anual o cuatrimestral', 'Materiales y guías para docentes', 'Proyecto final + muestra institucional']
+      },
+      {
+        title: 'Laboratorio de Ciencias + Feria Científica',
+        items: ['Diseño por ejes y experiencias', 'Instrumentos de evaluación', 'Producto final para exposición']
+      },
+      {
+        title: 'Oratoria, Debate y Comunicación',
+        items: ['Entrenamiento progresivo', 'Rúbricas de desempeño', 'Torneo interno / muestra']
+      }
+    ],
+    formacion: [
+      {
+        title: 'Evaluación Formativa y Rúbricas (situada)',
+        items: ['Diseño de instrumentos', 'Retroalimentación efectiva', 'Acompañamiento en aula']
+      },
+      {
+        title: 'Gestión de Aula y Convivencia',
+        items: ['Acuerdos institucionales', 'Estrategias preventivas', 'Intervenciones con familias']
+      },
+      {
+        title: 'Innovación Didáctica con Tecnología',
+        items: ['Modelos de clase activa', 'Herramientas concretas', 'Plan de implementación institucional']
+      }
+    ]
+  };
+
+  function openModal(type){
+    modalTitle.textContent = type === 'programas' ? 'Programas Extracurriculares' : 'Formación Institucional';
+    modalList.innerHTML = '';
+
+    proposals[type].forEach(p => {
+      const wrap = document.createElement('div');
+      wrap.className = 'proposal';
+
+      const h4 = document.createElement('h4');
+      h4.textContent = p.title;
+
+      const ul = document.createElement('ul');
+      p.items.forEach(it => {
+        const li = document.createElement('li');
+        li.textContent = it;
+        ul.appendChild(li);
+      });
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'interest-btn';
+      btn.textContent = 'Me interesa';
+      btn.addEventListener('click', () => {
+        // Abre modal de interés con propuesta seleccionada
+        interestTitle.textContent = 'Me interesa: ' + p.title;
+        interestProposal.value = p.title;
+        interestModal.classList.add('show');
+        interestModal.setAttribute('aria-hidden', 'false');
+      });
+
+      actions.appendChild(btn);
+
+      wrap.appendChild(h4);
+      wrap.appendChild(ul);
+      wrap.appendChild(actions);
+
+      modalList.appendChild(wrap);
+    });
+
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  modalClose.addEventListener('click', ()=>{ modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); });
+  modal.addEventListener('click', e=>{ if(e.target===modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); } });
+
+  // Cerrar modal interés
+  interestClose.addEventListener('click', ()=>{ interestModal.classList.remove('show'); interestModal.setAttribute('aria-hidden', 'true'); });
+  interestModal.addEventListener('click', e=>{ if(e.target===interestModal){ interestModal.classList.remove('show'); interestModal.setAttribute('aria-hidden', 'true'); } });
+
+  // Enviar formulario interés por AJAX y cerrar modal
+  if(interestForm){
+    interestForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const ok = await submitFormAjax(interestForm);
+      if(ok){
+        interestModal.classList.remove('show');
+        interestModal.setAttribute('aria-hidden', 'true');
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  // Botones de tarjetas
+  document.querySelectorAll('.card.interactive').forEach(card=>{
+    const btn = card.querySelector('.card-btn');
+    btn.addEventListener('click', ()=> openModal(card.dataset.type));
   });
 
-  closeBtn.addEventListener('click', ()=>{
-    popup.classList.remove('show');
-  });
 </script>
 
 <script>
