@@ -186,7 +186,7 @@
       opacity:0;
       transform:translateY(-20px);
       pointer-events:none;
-      transition:all 1.5s ease;
+      transition:all .45s cubic-bezier(0.22, 1, 0.36, 1);
       z-index:9999;
     }
 
@@ -242,7 +242,7 @@
   justify-content:center;
   opacity:0;
   pointer-events:none;
-  transition:opacity 1.5s ease;
+  transition:opacity .45s ease;
   z-index:9999
 }
 
@@ -258,7 +258,7 @@
       overflow-y:auto; /* scroll */
       box-shadow:0 24px 60px rgba(0,0,0,.25);
       transform:translateY(18px);
-      transition:all 1.5s ease;
+      transition:all .45s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .modal.small .modal-content{
@@ -272,7 +272,7 @@
   padding:30px;
   border-radius:16px;
   position:relative;
-  animation:scaleIn 1.5s ease
+  animation:scaleIn .45s ease
 }
 
 @keyframes scaleIn{
